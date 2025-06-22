@@ -1,5 +1,4 @@
 # InRoom
-=======
 ## Get started
 
 1. Install dependencies
@@ -17,13 +16,19 @@
     psql -U seu_usuario -d HoteisWEB -f caminho/para/arquivo.sql
    ```
    2.3 Configure the database Pool in server.js
+
+3. Install dependencies
    
+   ```bash
+    npm install
+   ```
+
 4. Start the app
 
    ```bash
     npx expo start
    ```
-
+   
 5. Start the express backend in another terminal
    
    ```bash
