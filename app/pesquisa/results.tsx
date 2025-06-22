@@ -4,7 +4,7 @@ import { useLocalSearchParams, Stack } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios'; // Importe Axios
 
-const API_BASE_URL = 'http://10.0.0.145:3000/api'; // <--- MUDE PARA O IP DA SUA MÁQUINA E PORTA DA API
+const API_BASE_URL = 'http://127.0.0.1:3000/api'; // <--- MUDE PARA O IP DA SUA MÁQUINA E PORTA DA API
 
 export default function SearchResultsScreen() {
   const params = useLocalSearchParams();
