@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Linking, TextInput } from 'react-native'; // Importe StyleSheet
 import HotelRoomCard from '../(rooms)/hotelRoomCard';
+import { useRouter } from 'expo-router';
 
 export default function HomePage() {
+  const router = useRouter();
   const handleApplyNow = () => {
     console.log('Botão "Candidate-se Agora" clicado!');
     Linking.openURL('https://github.com/DiogoGMelo/InRoom');
@@ -13,9 +15,12 @@ export default function HomePage() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
-  const handleSearch = () => {
-    console.log('Pesquisar clicado com:', { city, state, minPrice, maxPrice });
-
+   const handleSearch = () => {
+    console.log('Tentando navegar com:', { city, state, minPrice, maxPrice });
+    router.push({
+      pathname: '/pesquisa/results',
+      params: { city, state, minPrice, maxPrice },
+    });
   };
   return (
     // Adicione o contentContainerStyle aqui para o ScrollView principal
