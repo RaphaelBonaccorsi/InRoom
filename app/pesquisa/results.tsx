@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios'; // Importe Axios
+import HotelCard from '../../components/HotelCard';
 
 const API_BASE_URL = 'http://127.0.0.1:3000/api'; // <--- MUDE PARA O IP DA SUA MÁQUINA E PORTA DA API
 
@@ -26,7 +27,7 @@ export default function SearchResultsScreen() {
         if (maxPrice) queryParams.append('maxPrice', maxPrice as string);
 
         const url = `${API_BASE_URL}/hoteis?${queryParams.toString()}`;
-        console.log("URL da API:", url); // Para depuração
+        //console.log("URL da API:", url); // Para depuração
 
         const response = await axios.get(url);
         setFilteredHotels(response.data);
@@ -41,23 +42,9 @@ export default function SearchResultsScreen() {
 
     fetchHotels();
   }, [city, state, minPrice, maxPrice]); // Refaz a busca quando os parâmetros mudam
-
-  const renderHotelItem = ({ item }: { item: any }) => ( // Ajuste o tipo 'any' para a interface do seu hotel
-    <TouchableOpacity style={styles.hotelCard} onPress={() => console.log('Detalhes do hotel:', item.id)}>
-      <Image source={{ uri: item.imagem_url || 'https://via.placeholder.com/150' }} style={styles.hotelImage} />
-      <View style={styles.hotelInfo}>
-        <Text style={styles.hotelName}>{item.nome}</Text>
-        <Text style={styles.hotelLocation}>{item.cidade}, {item.estado}</Text>
-        <View style={styles.ratingPriceContainer}>
-          <View style={styles.ratingContainer}>
-            <MaterialIcons name="star" size={16} color="#FFD700" />
-            <Text style={styles.hotelRating}>{item.avaliacao != null ? parseFloat(item.avaliacao).toFixed(1) : 'N/A'}</Text>
-          </View>
-          <Text style={styles.hotelPrice}>R$ {item.preco || '0.00'} / noite</Text>
-        </View>
-        <Text style={styles.hotelDescription} numberOfLines={2}>{item.descricao}</Text>
-      </View>
-    </TouchableOpacity>
+  const router = useRouter();
+  const renderHotelItem = ({ item }: { item: any }) => (
+    <HotelCard item={item} onPress={(id) => router.push(`/hotel/${id}`)} />
   );
 
   return (
@@ -112,65 +99,6 @@ const styles = StyleSheet.create({
       color: '#333',
       marginBottom: 15,
       textAlign: 'center',
-  },
-  hotelCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    marginBottom: 15,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  hotelImage: {
-    width: 120,
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  hotelInfo: {
-    flex: 1,
-    padding: 15,
-    justifyContent: 'space-between',
-  },
-  hotelName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
-  },
-  hotelLocation: {
-    fontSize: 14,
-    color: '#777',
-    marginBottom: 5,
-  },
-  ratingPriceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  hotelRating: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#FFD700',
-    marginLeft: 5,
-  },
-  hotelPrice: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#007BFF',
-  },
-  hotelDescription: {
-    fontSize: 13,
-    color: '#555',
-    marginTop: 5,
   },
   loadingContainer: {
     flex: 1,
