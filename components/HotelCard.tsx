@@ -24,9 +24,14 @@ const HotelCard: React.FC<HotelCardProps> = ({ item, onPress }) => (
       <View style={styles.ratingPriceContainer}>
         <View style={styles.ratingContainer}>
           <MaterialIcons name="star" size={16} color="#FFD700" />
-          <Text style={styles.hotelRating}>{item.avaliacao != null ? parseFloat(item.avaliacao as string).toFixed(1) : 'N/A'}</Text>
+          <Text style={styles.hotelRating}>
+            {item.avaliacao != null ? parseFloat(item.avaliacao as string).toFixed(1) : 'N/A'}
+          </Text>
         </View>
-        <Text style={styles.hotelPrice}>R$ {item.preco || '0.00'} / noite</Text>
+        {/* CORREÇÃO AQUI: Garante que o preço seja formatado com toFixed(2) */}
+        <Text style={styles.hotelPrice}>
+          R$ {typeof item.preco === 'number' ? item.preco.toFixed(2) : parseFloat(item.preco as string).toFixed(2)} / noite
+        </Text>
       </View>
       <Text style={styles.hotelDescription} numberOfLines={2}>{item.descricao}</Text>
     </View>
