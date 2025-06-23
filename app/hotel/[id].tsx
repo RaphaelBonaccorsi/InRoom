@@ -25,32 +25,28 @@ export default function HotelDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchHotel = async () => {
       setLoading(true);
       setError(null);
       try {
-        // Para buscar um hotel por ID, o ideal é ter um endpoint como /hoteis/:id no backend
-        // Seu código atual em [id].tsx está chamando /hoteis?id=...
-        // Vou manter a chamada atual, mas um endpoint /hoteis/:id é mais limpo.
-        // Se seu backend tem `/api/hoteis/:id`, mude a URL para `${API_BASE_URL}/hoteis/${id}`
-        const queryParams = new URLSearchParams();
-        if (id) queryParams.append('id', id);
-
-        const url = `${API_BASE_URL}/hoteis?${queryParams.toString()}`;
+        const url = `${API_BASE_URL}/hoteis/${id}`;
+        
         const response = await axios.get(url);
-
-        if (Array.isArray(response.data) && response.data.length > 0) {
-          setHotel(response.data[0]);
-        } else if (response.data && !Array.isArray(response.data)) {
+        // O backend para /hoteis/:id deve retornar um único objeto, não um array.
+        // Ajuste a lógica de setHotel para esperar um objeto direto.
+        if (response.data && !Array.isArray(response.data)) {
           setHotel(response.data);
         } else {
-          setError('Hotel não encontrado.');
+          setError('Hotel não encontrado ou formato de resposta inesperado.');
         }
       } catch (err) {
-        console.error("Erro ao carregar detalhes do hotel:", err);
-        setError('Não foi possível carregar os detalhes do hotel.');
-        Alert.alert("Erro de Rede", "Não foi possível conectar ao servidor. Verifique se o backend está rodando e o IP está correto.");
+        console.error("Erro ao buscar detalhes do hotel:", err);
+        if (axios.isAxiosError(err) && err.response && err.response.status === 404) {
+          setError("Hotel não encontrado.");
+        } else {
+          setError("Não foi possível carregar os detalhes do hotel.");
+        }
       } finally {
         setLoading(false);
       }
